@@ -1,0 +1,10 @@
+{
+    "rest-client.environmentVariables": {
+
+        "$shared": {},
+        "local env":{
+            "Host":"http://localhost:8140",
+            "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY0NjA5OWNiMTBiZmQwZjg2YmYwNDYiLCJpYXQiOjE3MDEwNzg3NzEsImV4cCI6MTcwMTY4MzU3MX0.fvXwiC4gpQWCc3DwXmQR_O1oy9Q81RRzoSr75izXYDc"
+        }
+    }
+}

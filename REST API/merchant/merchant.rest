@@ -1,0 +1,132 @@
+
+
+GET {{Host}}/api/v1/onboarding/merchant
+###
+GET {{Host}}/api/v1/onboarding/merchant/form
+Authorization: {{token}}
+
+
+# Merchant Step One Creation/updation
+### 
+PUT {{Host}}/api/v1/onboarding/stepOne 
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "legalName": "Taimoor Hasan - Updated",
+    "merchantBrandName": "Model School Lahore",
+    "NTN": "56416524",
+    "regulatoryAuthorityName": "SECP",
+    "salesTaxRegistration": "452342342",
+    "nationalTaxNumber": "234234234",
+    "CeoName": "Taimoor Hasan",
+    "ceoCNIC": "324234234",
+    "CeoMobile": "03007546112",
+    "ceoEmail": "taimoor1071@gmail.com",
+    "ceoAddress": "Chak74/M Dars Town",
+    "ceoState": "Punjab",
+    "ceoCity": "Dahranwala",
+    "directors": [
+        {
+            "fullName": "",
+            "cnic": "34234234234423423",
+            "mobile": "03007546112",
+            "email": "taimoor1071@gmail.com",
+            "address": "Chak74/M Dars Town",
+            "state": "Punjab",
+            "city": "Dahranwala",
+            "name": "jbj bjnn"
+        },
+        {
+            "fullName": "",
+            "cnic": "324234235",
+            "mobile": "03432046170",
+            "email": "averexapp@gmail.com",
+            "address": "Model Town House No 6 Street 4",
+            "state": "Punjab",
+            "city": "Hasil Pur",
+            "name": "Farhan Ali"
+        },
+        {
+            "fullName": "",
+            "cnic": "423423423",
+            "mobile": "366655555",
+            "email": "veydecarzi@vusra.com",
+            "address": "njhhjhjhj jhjk",
+            "state": "punjab",
+            "city": "jkjhkg",
+            "name": "Taimoor Hasan"
+        }
+    ]
+}
+
+
+# Merchant Step Two Creation/updation
+### 
+
+PUT {{Host}}/api/v1/onboarding/stepTwo 
+Content-Type: application/json
+Authorization: {{token}}
+
+
+{
+      "mainLineOfBusiness": "Main Business",
+      "address": "Business Address",
+      "city": "Business City",
+      "state": "state",
+      "mobile": "1234567890",
+      "email": "business@example.com",
+      "website": "http://example.com",
+      "additionalMobile": "String",
+      "additionalEmail": "String",
+      "additionalAddress": "String",
+      "additionalState": "String",
+      "additionalCity": "String"
+}
+
+###
+
+PUT {{Host}}/api/v1/onboarding/stepThree
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "primaryPOCName": "String",
+    "primaryPOCMobile": "String",
+    "primaryPOCEmail": "String",
+    "primaryPOCCnic": "String",
+    "primaryPOCDesignation": "String",
+    "secondaryPOCName": "String",
+    "secondaryPOCMobile": "String",
+    "secondaryPOCEmail": "String",
+    "secondaryPOCCnic": "String",
+    "secondaryPOCDesignation": "String",
+    "agreementDetailsNameOfSignee": "String",
+    "agreementDetailsCnic": "String",
+    "agreementDetailsDesignation": "String",
+    "agreementDetailsEmail": "String",
+    "agreementDetailsMobile": "String",
+    "agreementDetailsPlaceOfExecution": "String",
+    "declarationNameOfSignee": "String",
+    "declarationCnic": "String",
+    "declarationDesignation": "String",
+    "declarationEmail": "String",
+    "declarationMobile": "String",
+    "declarationPlaceOfExecution": "String"
+}
+
+###
+PUT {{Host}}/api/v1/onboarding/stepFour
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+      "bankName": "Bank Name",
+      "accountTitle": "Account Title",
+      "accountNumber": "1234567890",
+      "iban": "IBAN12345",
+      "accountOpeningDate": "2023-01-15",
+      "branchName": "Branch Name",
+      "branchCode": "Branch Code",
+      "branchCity": "Branch City"
+}

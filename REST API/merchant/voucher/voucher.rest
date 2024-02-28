@@ -1,0 +1,35 @@
+
+
+
+# Get All Voucher By Merchant
+###
+GET {{Host}}/api/v1/voucher/merchant-vouchers
+Authorization: {{token}}
+
+
+#  Create Voucher
+###
+POST {{Host}}/api/v1/voucher/ 
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "name":"Ahmad Ali",
+    "amount":"3000",
+    "voucherId":"78965612894456",
+    "purpose":"admision Fee",
+    "email":"example@gmail.com",
+    "mobile":"030012345678",
+    "dueDate":"2023-11-28T12:33:19.097Z",
+    "paidDate":"2023-11-02",
+    "paymentMethod":"jazzcash",
+    "status":"paid"
+    
+
+
+}
+
+# Delete Voucher
+###
+DELETE {{Host}}/api/v1/voucher/6565b22957050f937273d62c
+Authorization: {{token}}

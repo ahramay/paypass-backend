@@ -1,0 +1,48 @@
+# This is Merchant Onboarding Register before starting kyc onbaording merchant require 
+# register verify email,and phone 
+# and then login
+
+#Register User
+### 
+POST {{Host}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "fullName":"Alia Arshad",
+    "organizationName":"TechnDevs",
+    "cnic":"31103-6565655-3",
+    "phone":"123456789",
+    "countryCode":"+92",
+    "email":"eamil5@gmail.com",
+    "password":"112233",
+    "confirmPassword":"112233"
+}
+
+### Login User
+
+POST {{Host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email":"eamil3@gmail.com",
+    "password":"112233"
+}
+
+### Forgot Password
+
+POST {{Host}}/api/v1/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email":"arslanjajja13@gmail.com"
+}
+
+### Reset Password
+
+POST {{Host}}/api/v1/auth/reset-password
+Content-Type: application/json
+
+{
+    "token":"passwordresettoken",
+    "password":"password1"
+}

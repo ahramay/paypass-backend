@@ -1,0 +1,27 @@
+
+
+# Get All User 
+###
+GET {{Host}}/api/v1/admin/user/all-user
+
+# Get Merchant/user Statistic by Status
+###
+GET {{Host}}/api/v1/admin/user/user-statistic-by-status
+
+
+###
+POST {{Host}}/api/v1/admin/user/all-user
+Content-Type: application/json
+
+{
+  "pageIndex": 1,
+  "pageSize": 50,
+  "sort": {
+    "order": "",
+    "key": ""
+  },
+  "query": "",
+  "filterData": {
+    "status": ""
+  }
+}

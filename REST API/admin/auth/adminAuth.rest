@@ -1,0 +1,20 @@
+#Register User
+### 
+POST {{Host}}/api/v1/admin/auth/register
+Content-Type: application/json
+
+{
+    "name":"Alia Arshad",
+    "email":"eamil1@gmail.com",
+    "password":"112233"
+}
+
+### Login User
+
+POST {{Host}}/api/v1/admin/auth/login
+Content-Type: application/json
+
+{
+    "email":"eamil1@gmail.com",
+    "password":"112233"
+}
