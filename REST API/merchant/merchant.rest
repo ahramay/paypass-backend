@@ -130,3 +130,17 @@ Authorization: {{token}}
       "branchCode": "Branch Code",
       "branchCity": "Branch City"
 }
+
+###
+
+POST {{Host}}/api/v1/onboarding/merchantClient
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "fullName":"Alias Arshads",
+    "phone":"123456789",
+    "email":"eamil234@gmail.com",
+    "password":"Appleapple@1",
+    "confirmPassword":"Appleapple@1"
+}

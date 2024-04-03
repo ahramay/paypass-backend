@@ -6,10 +6,6 @@ const voucherSchema = new mongoose.Schema<IVoucher>(
       type:mongoose.Schema.Types.ObjectId,
       required:true
     },
-    name: {
-      type: String,
-      required: true,
-    },
     amount: {
       type: Number,
       required: true,
@@ -18,23 +14,11 @@ const voucherSchema = new mongoose.Schema<IVoucher>(
       type: Number,
       // required:true,
     },
-    purpose: {
-      type: String,
-    },
-    email: {
-      type: String,
-    },
-    mobile: {
-      type: String,
-    },
-    dueDate:{
-      type:String,
-    },
-    paidDate:{
-      type:String
-    },
     paymentMethod:{
       type:String
+    },
+    customFields: {
+      type: mongoose.Schema.Types.Mixed, // Accept any type for custom fields
     },
     status: {
       type: String,

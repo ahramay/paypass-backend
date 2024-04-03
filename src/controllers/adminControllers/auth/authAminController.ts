@@ -41,7 +41,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
   }
 
   // Generate a JWT token
-  const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+  const token = jwt.sign({ userId: user._id , email: user.email}, JWT_SECRET, {
     expiresIn: JWT_EXPIRY,
   });
 

@@ -1,8 +1,11 @@
 import * as Yup from 'yup'
-import IUser, { ISignUpForm, TSignIn } from '../../types/userTypes/user';
+import IUser, {  TSignIn } from '../../types/userTypes/user';
+import { ISignUpForm } from '../../types/merchantTypes/merchantClinet/merchantClinet';
 
-const registrationSchema: Yup.ObjectSchema<ISignUpForm> =
+
+const merchantClientSchema: Yup.ObjectSchema<ISignUpForm> =
     Yup.object().shape({
+        fullName: Yup.string().required('Please enter your full name'),
         email: Yup.string()
             .required('Please enter your email')
             .email('Invalid email'),
@@ -10,9 +13,6 @@ const registrationSchema: Yup.ObjectSchema<ISignUpForm> =
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), undefined], 'Passwords must match')
             .required('Confirm Password is required'),
-        fullName: Yup.string().required('Please enter your full name'),
- 
-        countryCode: Yup.string().required('Please select a country'),
         phone: Yup.string().required('Please enter your phone number'),
     })
     export const SignInValidationSchema: Yup.ObjectSchema<TSignIn> =
@@ -24,4 +24,4 @@ const registrationSchema: Yup.ObjectSchema<ISignUpForm> =
     })
 
 
-export default registrationSchema;
+export default merchantClientSchema;

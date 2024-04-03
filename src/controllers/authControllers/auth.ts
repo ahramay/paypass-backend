@@ -9,6 +9,8 @@ import registrationSchema, {
   SignInValidationSchema,
 } from "../../validations/auth/authValidation";
 
+import MerchatClinet from "../../models/Merchant/MerchantClient/merchatClinet";
+
 const JWT_SECRET = process.env.JWT_SECRET || "";
 const JWT_EXPIRY = process.env.JWT_EXPIRY || "";
 // Register User
@@ -49,6 +51,29 @@ export const loginUser = async (req: Request, res: Response) => {
   // Find the associated merchant
   const merchant = await Merchant.findOne({ user: user._id });
 
+  // Check if the user is a Merchant Client
+  const merchantClient = await MerchatClinet.findOne({ user: user._id });
+  if (merchantClient) {
+    // If a Merchant Client is found, attempt to log in
+    const validPassword = await argon2.verify(merchantClient.password, password);
+    if (validPassword) {
+      // If password is valid, generate JWT token for Merchant Client
+      const token = jwt.sign(
+        {
+          user: {
+            name: user.fullName,
+            organizationName: user.organizationName,
+            status: user.status,
+            role: user.role
+          },
+        },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRY }
+      );
+      return res.status(200).json({ token, role: "merchantClient", user });
+    }
+  }
+
   // Check which steps have data
   const completedSteps = [];
   if (merchant) {
@@ -75,6 +100,7 @@ export const loginUser = async (req: Request, res: Response) => {
       name: user.fullName,
       organizationName: user.organizationName,
       status: user.status,
+      role: user.role
     },
     completedSteps,
     lastCompletedStep,

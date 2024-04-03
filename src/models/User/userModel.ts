@@ -10,11 +10,9 @@ const userSchema = new Schema<IUser>(
     },
     organizationName: {
       type: String,
-      required: true,
     },
     cnic: {
       type: String,
-      required: true,
     },
     phone: {
       type: String,
@@ -32,6 +30,12 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
+    role:{
+      type:String,
+      enum: ['SuperAdmin', 'admin', 'User'],
+      default:'User'
+    },
+
     status:{
       type:String,
       // enum:['onboarding','pending','approved'],

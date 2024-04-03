@@ -8,7 +8,8 @@ interface IUser extends Document {
   email: string;
   password: string;
   countryCode:string;
-  status:string
+  status:string;
+  role:string
 }
 
 export interface ISignUpForm {
@@ -16,8 +17,6 @@ export interface ISignUpForm {
   password: string
   confirmPassword: string
   fullName: string
-  organizationName: string
-  cnic: string
   countryCode: string
   phone: string
 }
