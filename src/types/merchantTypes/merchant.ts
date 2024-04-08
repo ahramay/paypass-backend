@@ -87,6 +87,7 @@ export interface MerchantDocument extends Document{
   _id:Types.ObjectId,
    user: Types.ObjectId;
    currentStep:number,
+   profilePic: string,
   stepOne: StepOne,
   stepTwo:StepTwo,
   stepThree:StepThree

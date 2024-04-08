@@ -39,7 +39,7 @@ const userSchema = new Schema<IUser>(
     status:{
       type:String,
       // enum:['onboarding','pending','approved'],
-      enum: ['active', 'pending', 'onboarding', 'blocked', 'rejected'],
+      enum: ['active', 'pending', 'onboarding', 'blocked', 'rejected',],
       default:'onboarding'
     }
   },

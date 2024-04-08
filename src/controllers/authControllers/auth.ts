@@ -11,6 +11,9 @@ import registrationSchema, {
 
 import MerchatClinet from "../../models/Merchant/MerchantClient/merchatClinet";
 
+
+
+
 const JWT_SECRET = process.env.JWT_SECRET || "";
 const JWT_EXPIRY = process.env.JWT_EXPIRY || "";
 // Register User
@@ -182,3 +185,8 @@ const generateResetToken = () => {
   const token = randomBytes(32).toString("hex"); // Generate a 32-character hex token
   return token;
 };
+
+const getUserById = async (userId: string) => {
+  // Your implementation here
+};
+

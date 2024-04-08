@@ -13,6 +13,10 @@ const MerchantSchema = new Schema<MerchantDocument>({
     type: Number,
     default: 0, // Assuming the first step is 1
   },
+  profilePic: {
+    type: String,
+    required: false,
+  },
   stepOne:StepOneSchema,
   stepTwo: StepTwoSchema,
   stepThree: StepThreeSchema,

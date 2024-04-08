@@ -6,7 +6,8 @@ import MerchatClinet from "../../models/Merchant/MerchantClient/merchatClinet";
 import merchantClientSchema, {
 } from "../../validations/auth/merchantClientValidation";
 import jwt from "jsonwebtoken";
-
+import { bucketFolders,uploadFile } from '../../services/aws.service';
+import VoucherFields from "../../models/Merchant/voucher/voucherFields";
 const JWT_SECRET = process.env.JWT_SECRET || "";
 const JWT_EXPIRY = process.env.JWT_EXPIRY || "";
 
@@ -61,9 +62,9 @@ export const updateMerchantStep = async (req: Request, res: Response) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const userEmail: string = user.email;
+      // const userEmail: string = user.email;
 
-      await sendEmailToSuperAdmin('Merchant Step Updated', 'A merchant has updated their step.', userEmail);
+      // await sendEmailToSuperAdmin('Merchant Step Updated', 'A merchant has updated their step.', userEmail);
       console.log(user)
     }
 
@@ -111,6 +112,8 @@ export const getMerchantDetail = async (req: Request, res: Response) => {
 };
 
 
+// --------------------Merchant Client---------------------------------------
+
 export const createMerchantClient = async (req: Request, res: Response) => {
   try {
     // Validate the registration data using the provided schema
@@ -153,34 +156,131 @@ export const getMerchantClient = async (req: Request, res: Response) => {
   res.json(merchantUsers);
 };
 
-// export const getMerchantClient = async (req: Request, res: Response) => {
-//   try {
-//     const { fullName, email, phone, countryCode, password } = req.body;
-    
-//     // Validate the request body
-//     if (!fullName || !email || !phone || !countryCode || !password) {
-//       return res.status(400).json({ error: 'Missing required fields' });
-//     }
+export const updateMerchantClient = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // Get the merchant client ID from the request params
 
-//     // Check if the merchant is authenticated
-//     // Assuming you have middleware for authentication
-//     const merchantId = req.user.id; // Assuming you extract the merchant ID from the authenticated user
-    
-//     // Create the merchant client
-//     const merchantClient = new MerchatClinet({
-//       fullName,
-//       email,
-//       phone,
-//       countryCode,
-//       password, // Ensure to hash the password before saving
-//       merchant: merchantId, // Assign the merchant ID to the client
-//     });
+    // Validate the update data using the provided schema
+    await merchantClientSchema.validate(req.body, { abortEarly: false });
 
-//     await merchantClient.save();
+    // Find the existing Merchant Client by ID
+    const existingMerchantClient = await MerchatClinet.findById(id);
+    if (!existingMerchantClient) {
+      return res.status(404).json({ error: "Merchant Client not found" });
+    }
 
-//     res.status(201).json({ success: true, message: 'Merchant client created successfully' });
-//   } catch (error) {
-//     console.error('Error creating merchant client:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
+    // Update the Merchant Client data
+    await MerchatClinet.findByIdAndUpdate(id, req.body);
+
+    // Respond with success message
+    res.status(200).json({ success: true, message: "Merchant Client successfully updated" });
+  } catch (error) {
+    console.error("Error updating Merchant Client:", error);
+    // Respond with validation error or server error
+    res.status(400).json({ error: "Validation error" });
+  }
+};
+
+export const deleteMerchantClient = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // Get the merchant client ID from the request params
+
+    // Find the existing Merchant Client by ID
+    const existingMerchantClient = await MerchatClinet.findById(id);
+    if (!existingMerchantClient) {
+      return res.status(404).json({ error: "Merchant Client not found" });
+    }
+
+    // Delete the Merchant Client
+    await MerchatClinet.findByIdAndDelete(id);
+
+    // Delete the associated user
+    await User.findByIdAndDelete(existingMerchantClient.user);
+    // await User.findOne(existingMerchantClient.email)
+
+    // Respond with success message
+    res.status(200).json({ success: true, message: "Merchant Client successfully deleted" });
+  } catch (error) {
+    console.error("Error deleting Merchant Client:", error);
+    // Respond with validation error or server error
+    res.status(400).json({ error: "Validation error" });
+  }
+};
+
+
+export const updateUserProfilePic = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    const file = req.file;
+    console.log("user",userId)
+    if (!file) {
+      return res.status(400).send('Invalid request');
+    }
+
+    // Upload file to S3
+    const path = await uploadFile(file, bucketFolders.ONBOARDING_FOLDER);
+
+    // Get user by ID
+    const merchant = await Merchant.findOne({ user: userId });
+    console.log("user",merchant)
+    // Handle case where merchant is null
+    if (!merchant) {
+      return res.status(404).send('Merchant not found');
+    }
+
+    // Update merchant profile picture URL
+    merchant.profilePic = path.url;
+
+    // Save merchant changes
+    await merchant.save();
+
+    // Respond with success message
+    res.status(200).send('Profile picture updated successfully');
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).send('Internal server error');
+  }
+};
+
+export const fileInsert = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const voucherFields: any[] = req.body;
+
+    const docs = await VoucherFields.insertMany(voucherFields);
+
+    if (docs) {
+      res.status(200).json({ success: true, message: "file upload success",docs });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "file upload failed",
+      });
+    }
+  } catch (err: any) {
+    console.error("file upload error: ", err);
+    res.status(500).json({ success: false, message: "internal_server_error" });
+  }
+};
+
+export const fileUpdate = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const VoucherField: any[] = req.body; 
+
+    const promises = VoucherField.map(async (item) => {
+      const updatedItem = await VoucherFields.findByIdAndUpdate(item._id, {
+        $set: { ...item },
+      });
+
+      return updatedItem;
+    });
+
+    Promise.all(promises)
+      .then(() =>
+        res.json({ success: true, message: "file upload success" })
+      )
+      .catch((err) => res.status(400).json(err));
+  } catch (err: any) {
+    console.error("file upload error: ", err);
+    res.status(500).json({ success: false, message: "internal_server_error" });
+  }
+};
