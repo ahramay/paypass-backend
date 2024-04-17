@@ -32,10 +32,17 @@ const userSchema = new Schema<IUser>(
     },
     role:{
       type:String,
-      enum: ['SuperAdmin', 'admin', 'User'],
+      enum: ['SuperAdmin', 'admin', 'staff', 'User'],
       default:'User'
     },
-
+    stepCount:{
+    type:Number,
+    default:0,
+    },
+    profileCompeleted:{
+      type:String,
+      default:"0%",
+    },
     status:{
       type:String,
       // enum:['onboarding','pending','approved'],

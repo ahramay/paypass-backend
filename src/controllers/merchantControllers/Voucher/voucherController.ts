@@ -1,10 +1,104 @@
 import { Request, Response } from "express";
 import Voucher from "../../../models/Merchant/voucher/voucherModel";
 import merchantUser from "../../../models/Merchant/merchantuser/merchantuserModel";
-import { ExacelUpload } from "../../../utils/models";
+import merchantclient from "../../../models/Merchant/MerchantClient/merchatClinet";
+import { ExacelUpload } from "../../../models/Merchant/voucher/models";
 import { Document } from 'mongoose';
 import Merchant from "../../../models/Merchant/merchantModel";
 import User from "../../../models/User/userModel";
+import ExcelJS from 'exceljs';
+
+export const exacelInsert = async (req: Request, res: Response) => {
+  try {
+    const excelUploads = req.body;
+    const userId = req.user?.userId;
+    console.log("userId-here:", userId);
+
+    // Generate voucher ID for each upload
+    for (let excelUpload of excelUploads) {
+      excelUpload.voucherId = await generateVoucherId();
+      excelUpload.merchant = userId;
+    }
+
+    // Insert uploads into the database
+    const insertedUploads = await ExacelUpload.insertMany(excelUploads);
+
+    // Extract status from each inserted document
+    const statuses = insertedUploads.map((upload) => upload.status);
+    console.log("statuses:",statuses , "insertedUploads:",insertedUploads)
+    res.status(200).json({
+      success: true,
+      insertedUploads: insertedUploads,
+      message: "Excel Upload success",
+      statuses: statuses,
+    });
+  } catch (err) {
+    console.error("Excel Upload error: ", err);
+    res.status(500).json({ success: false, message: "internal_server_error" });
+  }
+};
+
+
+
+// export const exacelInsertNew = async (req: Request, res: Response) => {
+//   try {
+//     const excelUploads = req.body;
+//     const userId = req.user?.userId;
+//     const userRole = req.user?.role;
+
+//     console.log("userId:", userId);
+//     console.log("userRole:", userRole);
+
+//     let merchant;
+
+//     if (userRole === "User") {
+//       console.log("Role is User");
+//       // If the role is "User", upload the data on behalf of this user
+//       merchant = await User.findById(userId);
+//       console.log("User merchant:", merchant);
+//     } else if (userRole === "staff") {
+//       console.log("Role is staff");
+//       // If the role is "staff", look for the merchant in merchantUserSchema
+//       // const merchantUser = await merchantUser.findOne({ merchant: userId });
+//       console.log("merchantUser:", merchatClinetSchema);
+//       if (merchatClinetSchema) {
+//         merchant = await merchatClinetSchema.findById(merchant);
+//         console.log("Staff merchant:", merchant);
+//       }
+//     }
+
+//     if (!merchant) {
+//       console.log("Merchant not found");
+//       return res.status(404).json({ message: "Merchant not found" });
+//     }
+
+//     // Generate voucher ID for each upload
+//     for (let excelUpload of excelUploads) {
+//       excelUpload.voucherId = await generateVoucherId();
+//       excelUpload.merchant = merchant._id;
+//     }
+
+//     // Insert uploads into the database
+//     const insertedUploads = await ExacelUpload.insertMany(excelUploads);
+//     console.log("Inserted uploads:", insertedUploads);
+
+//     // Extract status from each inserted document
+//     const statuses = insertedUploads.map((upload) => upload.status);
+//     console.log("statuses", statuses);
+
+//     res.status(200).json({
+//       success: true,
+//       insertedUploads: insertedUploads,
+//       message: "Excel Upload success",
+//       statuses: statuses,
+//     });
+//   } catch (err) {
+//     console.error("Excel Upload error: ", err);
+//     res.status(500).json({ success: false, message: "internal_server_error" });
+//   }
+// };
+
+
 // This will return Merchant voucher it's used token for merchant Id
 export const getMerchantVoucher = async (req: Request, res: Response) => {
   const userId = req.user?.userId;
@@ -90,38 +184,23 @@ const generateVoucherId = async (): Promise<number> => {
 };
 
 
-export const exacelInsert = async (req: Request, res: Response) => {
+export const getExacel = async (req: Request, res: Response) => {
   try {
-    const excelUploads = req.body;
-    const userId = req.user?.userId;
-    console.log("userId:", userId);
-    const merchant = await User.findOne({ user: userId });
-    console.log("dd",merchant)
-    
-    if (!merchant) {
-      return res.status(404).json({ message: "Merchant not found" });
-    }
-    // Generate voucher ID for each upload
-    for (let excelUpload of excelUploads) {
-      excelUpload.voucherId = await generateVoucherId();
-      excelUpload.merchant = merchant._id;
-    }
+    // Extract query parameters from the request
+    const query = req.query || {};
+     const userId = req.user?.userId;
 
-    // Insert uploads into the database
-    const insertedUploads = await ExacelUpload.insertMany(excelUploads);
-
-    // Extract status from each inserted document
-    const statuses = insertedUploads.map((upload) => upload.status);
-    console.log("st",statuses)
-    res.status(200).json({
-      success: true,
-      insertedUploads: insertedUploads,
-      message: "Excel Upload success",
-      statuses: statuses,
-    });
-  } catch (err) {
-    console.error("Excel Upload error: ", err);
-    res.status(500).json({ success: false, message: "internal_server_error" });
+    // Find documents based on the query
+    // const merchant = await User.findOne({ user: userId });
+    console.log("ht",userId)
+    const result = await ExacelUpload.find({merchant:userId}).sort({createdAt:-1});
+    console.log("ss",result)
+    // Send the response with the found documents
+    res.status(200).json(result);
+  } catch (error) {
+    // Handle errors
+    console.error("Error in getMerchantVoucher:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -151,23 +230,5 @@ export const exacelUpdate = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("Exacel Upload error: ", err);
     res.status(500).json({ success: false, message: "internal_server_error" });
-  }
-};
-
-export const getExacel = async (req: Request, res: Response) => {
-  try {
-    // Extract query parameters from the request
-    const query = req.query || {};
-     const userId = req.user?.userId;
-    // Find documents based on the query
-    const merchant = await User.findOne({ user: userId });
-    console.log(merchant)
-    const result = await ExacelUpload.find({merchant:merchant}).sort({createdAt:-1});
-    // Send the response with the found documents
-    res.status(200).json(result);
-  } catch (error) {
-    // Handle errors
-    console.error("Error in getMerchantVoucher:", error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
 };

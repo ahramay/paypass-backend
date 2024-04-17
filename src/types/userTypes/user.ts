@@ -1,17 +1,19 @@
 import { Document } from 'mongoose';
-
-interface IUser extends Document {
-  fullName: string;
-  organizationName: string;
-  cnic: string;
-  phone: string;
-  email: string;
-  password: string;
-  countryCode:string;
-  status:string;
-  role:string
-}
-
+ 
+interface IUser extends Document { 
+  fullName: string;  
+  organizationName: string; 
+  cnic: string; 
+  phone: string; 
+  email: string;   
+  password: string; 
+  countryCode:string; 
+  status:string;  
+  stepCount:Number;  
+  profileCompeleted:string;
+  role:string 
+} 
+ 
 export interface ISignUpForm {
   email: string
   password: string

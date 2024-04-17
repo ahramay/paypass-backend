@@ -6,12 +6,14 @@ const JWT_SECRET = process.env.JWT_SECRET || ''
 
 
 interface UserPayload {
-  userId: string; // Adjust the type based on your user object
+  userId: string;
+   role:string; // Adjust the type based on your user object
 }
 declare global {
   namespace Express {
     interface Request {
       user?: UserPayload;
+      role?:UserPayload
     }
   }
 }

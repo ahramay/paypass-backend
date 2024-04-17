@@ -28,8 +28,8 @@ const merchatClinetSchema = new mongoose.Schema<MerchatClinet>(
     },
     role:{
       type:String,
-      enum: ['merchantClient'],
-      default:'merchantClient'
+      enum: ['staff'],
+      default:'staff'
     }
 
   },

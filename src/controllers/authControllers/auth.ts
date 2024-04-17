@@ -37,6 +37,111 @@ export const registerUser = async (req: Request, res: Response) => {
     .json({ success: true, message: "User Success Fully Registered" });
 };
 
+//update user
+
+// export const updateUser = async (req: Request, res: Response) => {
+//   // const { email, status } = req.body;
+//   let { stepCount, profileCompeleted ,  email, status} = req.body;
+
+//   try {
+//       // Find the existing user
+//       const existingUser = await User.findOne({ email });
+
+//       // If user does not exist, return error
+//       if (!existingUser) {
+//           return res.status(409).json({ error: "User Not Found" });
+//       }
+
+//       // Update stepCount
+  
+//           // Convert stepCount to number and increment by 1
+//           // stepCount = parseInt(stepCount, 10) + 1;
+//           console.log("stepCount:",stepCount)
+
+//       // Update profileCompeleted based on conditions
+//       if (profileCompeleted === "0%") {
+//         profileCompeleted = "25%";
+//     } else if (profileCompeleted === "25%") {
+//         profileCompeleted = "50%";
+//     } else if (profileCompeleted === "50%") {
+//         profileCompeleted = "75%";
+//     } else if (profileCompeleted === "75%") {
+//         profileCompeleted = "100%";
+//     } else {
+//         // Default to "25%" if the current value is not recognized
+//         profileCompeleted = "25%";
+//     }
+
+//     if (stepCount === 0) {
+//       stepCount = 1;
+//   } else if (stepCount === 1) {
+//     stepCount = 2;
+//   } else if (stepCount === 2) {
+//     stepCount = 3;
+//   } else if (stepCount === 3) {
+//     stepCount =4;
+//   } else {
+//       // Default to "25%" if the current value is not recognized
+//       stepCount = 1;
+//   }
+
+//       // Update the user with new status, stepCount, and profileCompeleted
+//       const updatedUser = await User.findOneAndUpdate(
+//           { email },
+//           { 
+//               status: "active",
+//               stepCount,
+//               profileCompeleted
+//           },
+//           { new: true } // Return the updated user
+//       );
+
+//       console.log("existingUser-updated:", updatedUser);
+
+//       // Send response
+//       res.status(200).json({ message: "User updated successfully", user: updatedUser });
+
+//   } catch (error) {
+//       console.error('Error updating user:', error);
+//       res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
+export const updateUser = async (req: Request, res: Response) => {
+  const { email, status, stepCount, profileCompeleted } = req.body;
+
+  try {
+      // Find the existing user
+      const existingUser = await User.findOne({ email });
+
+      // If user does not exist, return error
+      if (!existingUser) {
+          return res.status(409).json({ error: "User Not Found" });
+      }
+
+      // Update the user with new status, stepCount, and profileCompeleted
+      const updatedUser = await User.findOneAndUpdate(
+          { email },
+          {
+              status: "active",
+              stepCount,
+              profileCompeleted
+          },
+          { new: true } // Return the updated user
+      );
+
+      console.log("existingUser-updated:", updatedUser);
+
+      // Send response
+      res.status(200).json({ message: "User updated successfully", user: updatedUser });
+
+  } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 // Login User
 // Login User
 export const loginUser = async (req: Request, res: Response) => {
@@ -45,15 +150,15 @@ export const loginUser = async (req: Request, res: Response) => {
 
   // Find the user by email
   const user = await User.findOne({ email });
-
+  
   // If the user is not found or the password doesn't match, return an error
   if (!user || !(await argon2.verify(user.password, password))) {
     return res.status(403).json({ error: "Invalid credentials" });
   }
-
+  
   // Find the associated merchant
   const merchant = await Merchant.findOne({ user: user._id });
-
+ 
   // Check if the user is a Merchant Client
   const merchantClient = await MerchatClinet.findOne({ user: user._id });
   if (merchantClient) {
@@ -67,7 +172,8 @@ export const loginUser = async (req: Request, res: Response) => {
             name: user.fullName,
             organizationName: user.organizationName,
             status: user.status,
-            role: user.role
+            role: user.role,
+            email:user.email
           },
         },
         JWT_SECRET,
@@ -103,7 +209,8 @@ export const loginUser = async (req: Request, res: Response) => {
       name: user.fullName,
       organizationName: user.organizationName,
       status: user.status,
-      role: user.role
+      role: user.role,
+      email: user.email
     },
     completedSteps,
     lastCompletedStep,

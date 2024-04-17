@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IUser } from "../../../types/merchantTypes/merchantUser/merchantUserType";
+import { string } from "yup";
 const merchantUserSchema = new mongoose.Schema<IUser>(
   {
     merchant:{
@@ -28,6 +29,9 @@ const merchantUserSchema = new mongoose.Schema<IUser>(
       enum: ["unpaid", "paid", "failed", "expired"],
       default: "unpaid",
     },
+    role:{
+      type:String
+    }
   },
   { timestamps: true }
 );
