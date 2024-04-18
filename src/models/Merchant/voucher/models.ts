@@ -28,9 +28,6 @@ const ExacelUploadSchema = new mongoose.Schema<iModel>(
     Name: {
       type: String,
     },
-    DueDate: {
-      type: String,
-    },
     FatherName: {
       type: String,
     },

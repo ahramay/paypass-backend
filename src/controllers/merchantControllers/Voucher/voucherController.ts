@@ -6,7 +6,7 @@ import { ExacelUpload } from "../../../models/Merchant/voucher/models";
 import { Document } from 'mongoose';
 import Merchant from "../../../models/Merchant/merchantModel";
 import User from "../../../models/User/userModel";
-import ExcelJS from 'exceljs';
+// import ExcelJS from 'exceljs';
 
 export const exacelInsert = async (req: Request, res: Response) => {
   try {
