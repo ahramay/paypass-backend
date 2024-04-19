@@ -1,9 +1,17 @@
 
 
 GET {{Host}}/api/v1/onboarding/merchant
+
 ###
 GET {{Host}}/api/v1/onboarding/merchant/form
 Authorization: {{token}}
+
+###
+GET {{Host}}/api/v1/onboarding/get-user
+Content-Type: application/json
+Authorization: {{token}}
+
+
 
 
 # Merchant Step One Creation/updation

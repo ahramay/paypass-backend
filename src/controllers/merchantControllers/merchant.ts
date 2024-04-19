@@ -282,3 +282,19 @@ export const fileUpdate = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ success: false, message: "internal_server_error" });
   }
 };
+
+export const getUserDetails = async (req: Request, res: Response): Promise<any> => {
+  const userId = req.user?.userId; // Assuming your decoded JWT payload has userId
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error fetching user details: ${error.message}` });
+  }
+};

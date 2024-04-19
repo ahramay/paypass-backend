@@ -22,8 +22,8 @@ POST {{Host}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email":"eamil23@gmail.com",
-    "password":"Appleapple@1"
+    "email":"checksteps@gmail.com",
+    "password":"Qwerty!122"
 }
 
 ### Forgot Password

@@ -4,7 +4,7 @@
         "$shared": {},
         "local env":{
             "Host":"http://localhost:8140",
-            "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWRlZTQzOGQ5OWVjZWZmZGVjNDQwM2UiLCJpYXQiOjE3MTIyMzA3NDgsImV4cCI6MTcxMjgzNTU0OH0.YDgMr4VpwaSNzhmQEwr288exqJp5lFx987Q6wP5P1-k"
+            "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjIyNGU1MDY5YWUxYzhkNDE5YTAzMWMiLCJpYXQiOjE3MTM1MzU0ODUsImV4cCI6MTcxNDE0MDI4NX0.avI9JNV_3lVelGkJYFMKaoG0WIwSy12IJm43Ti-ds7A"
         }
     }
 }
