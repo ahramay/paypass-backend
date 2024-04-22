@@ -11,5 +11,6 @@ export interface iModel extends Document {
     DueDate:String,
     FatherName:String,
     Total:String,
-    status:String
+    status:String,
+    paidDate:Date
 }

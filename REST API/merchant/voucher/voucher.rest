@@ -24,5 +24,15 @@ Authorization: {{token}}
 
 # Delete Voucher
 ###
-DELETE {{Host}}/api/v1/voucher/6565b22957050f937273d62c
+DELETE {{Host}}/api/v1/voucher/65dee438d99eceffdec4403e
 Authorization: {{token}}
+
+# Update voucher status
+###
+PUT {{Host}}/api/v1/onboarding/update-status/66265d58d9b9664f0e9fdee0
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "paid"
+}

@@ -3,7 +3,7 @@ import express from 'express';
 import {getUserDetails, getAllMerchantDetail, getMerchantDetail, updateMerchantStep,getMerchantClient,createMerchantClient , updateMerchantClient, deleteMerchantClient ,fileUpdate,fileInsert} from '../../controllers/merchantControllers/merchant';
 import { authMiddleware } from '../../middlewares/authMiddleware';
 // import models from "../../models/Merchant/voucher/voucherFields";
-import { getExacel,exacelUpdate,exacelInsert } from '../../controllers/merchantControllers/Voucher/voucherController';
+import { getExacel,exacelUpdate,exacelInsert,UpdateStatus } from '../../controllers/merchantControllers/Voucher/voucherController';
 
 
 const router = express.Router();
@@ -15,6 +15,7 @@ router.put('/merchant-client/:id', updateMerchantClient);
 router.delete('/merchant-client/:id', deleteMerchantClient);
 router.post('/exacelinsert', exacelInsert);
 router.get('/get-Exacel', getExacel);
+router.put('/update-status/:id',UpdateStatus)
 router.put('/:stepNumber', updateMerchantStep);
 router.get('/merchant/form',getMerchantDetail)
 router.get('/get-user',getUserDetails)

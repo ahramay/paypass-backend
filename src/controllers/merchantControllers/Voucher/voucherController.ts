@@ -6,6 +6,7 @@ import { ExacelUpload } from "../../../models/Merchant/voucher/models";
 import { Document } from 'mongoose';
 import Merchant from "../../../models/Merchant/merchantModel";
 import User from "../../../models/User/userModel";
+import { date } from "yup";
 // import ExcelJS from 'exceljs';
 
 export const exacelInsert = async (req: Request, res: Response) => {
@@ -38,6 +39,128 @@ export const exacelInsert = async (req: Request, res: Response) => {
   }
 };
 
+const generateVoucherId = async (): Promise<number> => {
+  let voucherId = 0; // Initialize with a default value
+
+  // Generate a unique 7-digit voucher ID
+  let isUnique = false;
+  while (!isUnique) {
+    voucherId = Math.floor(1000000 + Math.random() * 9000000); // Generate random 7-digit number
+    const existingVoucher = await ExacelUpload.findOne({ voucherId });
+    if (!existingVoucher) {
+      isUnique = true;
+    }
+  }
+  return voucherId;
+};
+
+export const getExacel = async (req: Request, res: Response) => {
+  try {
+    // Extract query parameters from the request
+    const query = req.query || {};
+     const userId = req.user?.userId;
+
+    // Find documents based on the query
+    // const merchant = await User.findOne({ user: userId });
+    console.log("ht",userId)
+    const result = await ExacelUpload.find({merchant:userId}).sort({createdAt:-1});
+    console.log("ss",result)
+    // Send the response with the found documents
+    res.status(200).json(result);
+  } catch (error) {
+    // Handle errors
+    console.error("Error in getMerchantVoucher:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export const exacelUpdate = async (req: Request, res: Response) => {
+  try {
+    const ExacelUploads = req.body;
+
+    // Generate voucher ID for each ExacelUpload (if voucher ID is not provided)
+    for (let ExacelUpload of ExacelUploads) {
+      if (!ExacelUpload.voucherId) {
+        ExacelUpload.voucherId = await generateVoucherId(); // Generate unique voucher ID
+      }
+    }
+
+    // Update ExacelUploads in the database
+    const promises = ExacelUploads.map(async (item: any) => {
+      const updatedExacelUpload = await ExacelUpload.findByIdAndUpdate(item._id, {
+        $set: { ...item },
+      });
+      return updatedExacelUpload;
+    });
+
+    // Wait for all update operations to complete
+    Promise.all(promises)
+      .then(() => res.json({ success: true, message: "Exacel Upload success" }))
+      .catch((err) => res.status(400).json(err));
+  } catch (err) {
+    console.error("Exacel Upload error: ", err);
+    res.status(500).json({ success: false, message: "internal_server_error" });
+  }
+};
+
+export const getMerchantVoucher = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  const vouchers = await Voucher.find({ merchant: userId }).sort({createdAt:-1});
+  res.send(vouchers);
+};
+export const AddVoucher = async (req: Request, res: Response) => {
+  const data = req.body;
+  const userId = req.user?.userId;
+
+  // Create the voucher with the generated ID
+  const voucher = await Voucher.create({ ...data, merchant: userId});
+  res.status(201).json(voucher);
+};
+
+export const deleteVoucher = async (req: Request, res: Response) => {
+  const voucherId = req.params.voucherId;
+
+  const existingVoucher = await Voucher.findByIdAndDelete(voucherId);
+
+  if (!existingVoucher) {
+    return res.status(404).json({
+      success: false,
+      message: "Voucher Not Found",
+    });
+  }
+
+  res.json({
+    success: true,
+    message: "Voucher Success fully Deleted",
+  });
+};
+
+export const UpdateStatus = async (req:Request , res:Response) => {
+  const { id } = req.params;
+   const {status} = req.body
+   const existingExcel = await ExacelUpload.findById(id);
+   if (!existingExcel) {
+     return res.status(404).json({ error: "User not found" });
+   }
+   const currentDate = new Date();
+   console.log("req.body:",req.body,"currentDate:",currentDate)
+  try{
+       if( !status){
+        res.status(404).json({message:"id ,status is missing"})
+       }
+       console.log("sss",)
+       const voucher = await ExacelUpload.findByIdAndUpdate(id,
+        {status,paidDate:currentDate},
+        {new:true}
+       )
+       console.log("voucher:",voucher)
+       res.status(200).json({message:"Status updated Sucessfuly"})
+  }catch(error){
+    console.error("Error:", error);
+   res.status(500).json("internal Server Error")
+  }
+
+}
 
 
 // export const exacelInsertNew = async (req: Request, res: Response) => {
@@ -100,11 +223,6 @@ export const exacelInsert = async (req: Request, res: Response) => {
 
 
 // This will return Merchant voucher it's used token for merchant Id
-export const getMerchantVoucher = async (req: Request, res: Response) => {
-  const userId = req.user?.userId;
-  const vouchers = await Voucher.find({ merchant: userId }).sort({createdAt:-1});
-  res.send(vouchers);
-};
 
 
 // export const AddVoucher = async (req: Request, res: Response) => {
@@ -138,97 +256,5 @@ export const getMerchantVoucher = async (req: Request, res: Response) => {
 //   res.status(201).json(voucher);
 // };
 
-export const AddVoucher = async (req: Request, res: Response) => {
-  const data = req.body;
-  const userId = req.user?.userId;
-
-  // Create the voucher with the generated ID
-  const voucher = await Voucher.create({ ...data, merchant: userId});
-  res.status(201).json(voucher);
-};
 
 // The Delete Voucher to Delete Merchant Voucher, it's used voucher id in params
-export const deleteVoucher = async (req: Request, res: Response) => {
-  const voucherId = req.params.voucherId;
-
-  const existingVoucher = await Voucher.findByIdAndDelete(voucherId);
-
-  if (!existingVoucher) {
-    return res.status(404).json({
-      success: false,
-      message: "Voucher Not Found",
-    });
-  }
-
-  res.json({
-    success: true,
-    message: "Voucher Success fully Deleted",
-  });
-};
-
-
-
-const generateVoucherId = async (): Promise<number> => {
-  let voucherId = 0; // Initialize with a default value
-
-  // Generate a unique 7-digit voucher ID
-  let isUnique = false;
-  while (!isUnique) {
-    voucherId = Math.floor(1000000 + Math.random() * 9000000); // Generate random 7-digit number
-    const existingVoucher = await ExacelUpload.findOne({ voucherId });
-    if (!existingVoucher) {
-      isUnique = true;
-    }
-  }
-  return voucherId;
-};
-
-
-export const getExacel = async (req: Request, res: Response) => {
-  try {
-    // Extract query parameters from the request
-    const query = req.query || {};
-     const userId = req.user?.userId;
-
-    // Find documents based on the query
-    // const merchant = await User.findOne({ user: userId });
-    console.log("ht",userId)
-    const result = await ExacelUpload.find({merchant:userId}).sort({createdAt:-1});
-    console.log("ss",result)
-    // Send the response with the found documents
-    res.status(200).json(result);
-  } catch (error) {
-    // Handle errors
-    console.error("Error in getMerchantVoucher:", error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-export const exacelUpdate = async (req: Request, res: Response) => {
-  try {
-    const ExacelUploads = req.body;
-
-    // Generate voucher ID for each ExacelUpload (if voucher ID is not provided)
-    for (let ExacelUpload of ExacelUploads) {
-      if (!ExacelUpload.voucherId) {
-        ExacelUpload.voucherId = await generateVoucherId(); // Generate unique voucher ID
-      }
-    }
-
-    // Update ExacelUploads in the database
-    const promises = ExacelUploads.map(async (item: any) => {
-      const updatedExacelUpload = await ExacelUpload.findByIdAndUpdate(item._id, {
-        $set: { ...item },
-      });
-      return updatedExacelUpload;
-    });
-
-    // Wait for all update operations to complete
-    Promise.all(promises)
-      .then(() => res.json({ success: true, message: "Exacel Upload success" }))
-      .catch((err) => res.status(400).json(err));
-  } catch (err) {
-    console.error("Exacel Upload error: ", err);
-    res.status(500).json({ success: false, message: "internal_server_error" });
-  }
-};

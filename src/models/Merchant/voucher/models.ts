@@ -39,6 +39,9 @@ const ExacelUploadSchema = new mongoose.Schema<iModel>(
       enum: ["unpaid", "paid"],
       default: "unpaid",
     },
+    paidDate:{
+      type:Date
+    }
   },
   { strict: false, timestamps: true }
 );
