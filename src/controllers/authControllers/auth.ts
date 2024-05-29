@@ -2,7 +2,7 @@
     * @description      : 
     * @author           : 
     * @group            : 
-    * @created          : 29/05/2024 - 19:31:44
+    * @created          : 29/05/2024 - 20:02:24
     * 
     * MODIFICATION LOG
     * - Version         : 1.0.0
@@ -183,7 +183,7 @@ export const loginUser = async (req: Request, res: Response) => {
           user: {
             name: user.fullName,
             organizationName: user.organizationName,
-            status: "active",
+            status: user.status,
             role: user.role,
             email:user.email
           },

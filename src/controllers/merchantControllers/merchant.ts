@@ -1,3 +1,15 @@
+/**
+    * @description      : 
+    * @author           : 
+    * @group            : 
+    * @created          : 29/05/2024 - 20:02:46
+    * 
+    * MODIFICATION LOG
+    * - Version         : 1.0.0
+    * - Date            : 29/05/2024
+    * - Author          : 
+    * - Modification    : 
+**/
 import { Request, Response } from "express";
 import Merchant from "../../models/Merchant/merchantModel";
 import User from "../../models/User/userModel";
@@ -113,6 +125,7 @@ export const getMerchantDetail = async (req: Request, res: Response) => {
 export const createMerchantClient = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.userId;
+    const userRole = req.user?.role;
 
     // Validate the registration data using the provided schema
     await merchantClientSchema.validate(req.body, { abortEarly: false });
@@ -123,14 +136,17 @@ export const createMerchantClient = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "Email is already registered" });
     }
 
-    // Count the number of staff created by this merchant
-    const staffCount = await User.countDocuments({ merchant: userId, role: 'staff' });
+    // Check if the logged-in user is a staff member
+    if (userRole === 'staff') {
+      // Count the number of staff created by this merchant
+      const staffCount = await User.countDocuments({ merchant: userId, role: 'staff' });
 
-    if (staffCount >= 3) {
-      return res.status(403).json({ error: "Request to Merchant to create additional staff accounts" });
+      if (staffCount >= 3) {
+        return res.status(403).json({ error: "Request to Merchant to create additional staff accounts" });
+      }
     }
 
-    const newUser = new User({ ...req.body, role: "staff", merchant: userId });
+    const newUser = new User({ ...req.body, role: "staff", status: "active", merchant: userId });
     await newUser.save();
 
     const newMerchantClient = new MerchatClinet({ ...req.body, user: newUser._id, merchant: userId });
