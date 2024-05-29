@@ -112,7 +112,8 @@ export const getMerchantDetail = async (req: Request, res: Response) => {
 
 export const createMerchantClient = async (req: Request, res: Response) => {
   try {
-      const userId = req.user?.userId
+    const userId = req.user?.userId;
+
     // Validate the registration data using the provided schema
     await merchantClientSchema.validate(req.body, { abortEarly: false });
 
@@ -122,13 +123,17 @@ export const createMerchantClient = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "Email is already registered" });
     }
 
-    
-    const newUser = new User({ ...req.body ,role: "staff", merchant: userId});
+    // Count the number of staff created by this merchant
+    const staffCount = await User.countDocuments({ merchant: userId, role: 'staff' });
+
+    if (staffCount >= 3) {
+      return res.status(403).json({ error: "Request to Merchant to create additional staff accounts" });
+    }
+
+    const newUser = new User({ ...req.body, role: "staff", merchant: userId });
     await newUser.save();
-    
-    console.log("merchantId",userId)
+
     const newMerchantClient = new MerchatClinet({ ...req.body, user: newUser._id, merchant: userId });
-    console.log("ssddsd",newMerchantClient)
     await newMerchantClient.save();
 
     // Generate JWT token for the newly registered Merchant Client

@@ -1,3 +1,15 @@
+/**
+    * @description      : 
+    * @author           : 
+    * @group            : 
+    * @created          : 29/05/2024 - 19:31:44
+    * 
+    * MODIFICATION LOG
+    * - Version         : 1.0.0
+    * - Date            : 29/05/2024
+    * - Author          : 
+    * - Modification    : 
+**/
 import { Request, Response } from "express";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
@@ -171,7 +183,7 @@ export const loginUser = async (req: Request, res: Response) => {
           user: {
             name: user.fullName,
             organizationName: user.organizationName,
-            status: user.status,
+            status: "active",
             role: user.role,
             email:user.email
           },
