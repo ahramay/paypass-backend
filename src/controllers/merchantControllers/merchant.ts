@@ -125,8 +125,22 @@ export const getMerchantDetail = async (req: Request, res: Response) => {
 export const createMerchantClient = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.userId;
-    const userRole = req.user?.role;
+   
 
+        // Fetch the logged-in user's details
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ error: "User not found" });
+        }
+    
+        const userRole = user.role;
+
+        console.log("User Role:", userRole);
+  
+   // Disallow staff users from creating new staff accounts
+   if (userRole === 'staff') {
+    return res.status(403).json({ success: false, message: "Staff users are not allowed to create new staff accounts" });
+  }
     // Validate the registration data using the provided schema
     await merchantClientSchema.validate(req.body, { abortEarly: false });
 
@@ -136,17 +150,20 @@ export const createMerchantClient = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "Email is already registered" });
     }
 
-    // Check if the logged-in user is a staff member
-    if (userRole === 'staff') {
-      // Count the number of staff created by this merchant
-      const staffCount = await User.countDocuments({ merchant: userId, role: 'staff' });
+    // // Check if the logged-in user is a staff member
+    // if (userRole === 'staff') {
+    //   // Count the number of staff created by this merchant
+    //   const staffCount = await User.countDocuments({ merchant: merchantId, role: 'staff' });
 
-      if (staffCount >= 3) {
-        return res.status(403).json({ error: "Request to Merchant to create additional staff accounts" });
-      }
-    }
+    //   console.log("Merchant ID:", merchantId);
+    //   console.log("Staff Count:", staffCount);
+    //   if (staffCount >= 3) {
+    //     return res.status(403).json({ error: "Request to Merchant to create additional staff accounts" });
+    //   }
+    // }
 
     const newUser = new User({ ...req.body, role: "staff", status: "active", merchant: userId });
+    console.log("newUseer",newUser)
     await newUser.save();
 
     const newMerchantClient = new MerchatClinet({ ...req.body, user: newUser._id, merchant: userId });
