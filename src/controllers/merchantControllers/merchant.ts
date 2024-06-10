@@ -79,7 +79,7 @@ export const updateMerchantStep = async (req: Request, res: Response) => {
       // await sendEmailToSuperAdmin('Merchant Step Updated', 'A merchant has updated their step.', userEmail);
       console.log(user)
     }
-
+    console.log("step",updateData),
     res.status(200).json(updatedStep);
   } catch (error: any) {
     res.status(400).json({ error: error.message });

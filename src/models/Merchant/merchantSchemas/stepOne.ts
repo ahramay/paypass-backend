@@ -1,3 +1,15 @@
+/**
+    * @description      : 
+    * @author           : 
+    * @group            : 
+    * @created          : 10/06/2024 - 13:49:23
+    * 
+    * MODIFICATION LOG
+    * - Version         : 1.0.0
+    * - Date            : 10/06/2024
+    * - Author          : 
+    * - Modification    : 
+**/
 import { Schema, model } from 'mongoose';
 import { Director, StepOne } from '../../../types/merchantTypes/merchant';
 
@@ -16,9 +28,14 @@ export const StepOneSchema = new Schema<StepOne>({
     legalName: String,
     merchantBrandName: String,
     NTN: String,
-    regulatoryAuthorityName: String,
+    incorporationregulatoryAuthorityName: String,
+    salesTaxDate:String,
+    organization:String,
+    salesTaxAuthorityName:String,
     salesTaxRegistration: String,
     nationalTaxNumber: String,
+    IncorporationNtn:String,
+    IncorporationDate:String,
     CeoName: String,
     ceoCNIC: String,
     CeoMobile: String,

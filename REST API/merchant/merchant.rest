@@ -24,7 +24,7 @@ Authorization: {{token}}
     "legalName": "Taimoor Hasan - Updated",
     "merchantBrandName": "Model School Lahore",
     "NTN": "56416524",
-    "regulatoryAuthorityName": "SECP",
+    "incorporationregulatoryAuthorityName": "SECP",no
     "salesTaxRegistration": "452342342",
     "nationalTaxNumber": "234234234",
     "CeoName": "Taimoor Hasan",

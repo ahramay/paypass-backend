@@ -1,3 +1,15 @@
+/**
+    * @description      : 
+    * @author           : 
+    * @group            : 
+    * @created          : 10/06/2024 - 13:47:59
+    * 
+    * MODIFICATION LOG
+    * - Version         : 1.0.0
+    * - Date            : 10/06/2024
+    * - Author          : 
+    * - Modification    : 
+**/
 import { Document, Types } from 'mongoose';
 
 // Step One Schema types
@@ -16,9 +28,14 @@ export interface StepOne extends Document {
     legalName: string;
     merchantBrandName: string;
     NTN: string;
-    regulatoryAuthorityName: string;
+    incorporationregulatoryAuthorityName: string;
     salesTaxRegistration: string;
+    salesTaxDate:string;
+    salesTaxAuthorityName:string;
     nationalTaxNumber: string;
+    organization:string;
+    IncorporationNtn:string;
+    IncorporationDate:string;
     CeoName: string;
     ceoCNIC: string;
     CeoMobile: string;
